@@ -1,0 +1,49 @@
+server:
+    port: 8080
+    servlet:
+        context-path: /api
+spring:
+    application:
+        name: arco-design-server
+    profiles:
+        active: dev #默认为开发环境
+    servlet:
+        multipart:
+            enabled: true #开启文件上传
+            max-file-size: 10MB #限制文件上传大小为10M
+    jpa:
+        show-sql: true
+        hibernate:
+            ddl-auto: update
+    thymeleaf:
+        cache: true
+        check-template: true
+        check-template-location: true
+        enabled: true
+        encoding: UTF-8
+        excluded-view-names: ''
+        mode: HTML5
+        prefix: classpath:/templates/
+        suffix: .html
+        servlet:
+            content-type: text/html
+
+
+mybatis-plus:
+    configuration:
+        map-underscore-to-camel-case: true
+        log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    mapper-locations: classpath*:/mapper/**/*.xml
+    type-aliases-package: top.qiudb.module.*.domain.entity
+    type-enums-package: top.qiudb.common.constant
+    global-config:
+        db-config:
+            id-type: auto
+            logic-delete-value: 0
+            logic-not-delete-value: 1
+
+swagger:
+    enable: true
+    name: ma_ying_fa
+    url: https://gitee.com/ma_ying_fa
+    email: qiudb.top@aliyun.com

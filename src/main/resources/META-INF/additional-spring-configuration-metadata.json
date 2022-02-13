@@ -1,0 +1,28 @@
+{
+  "properties": [
+    {
+      "name": "spring.thymeleaf.content-type",
+      "type": "java.lang.String",
+      "description": "Description for spring.thymeleaf.content-type."
+    },
+    {
+      "name": "swagger.enable",
+      "type": "java.lang.String",
+      "description": "Description for swagger.enable."
+    },
+    {
+      "name": "swagger.name",
+      "type": "java.lang.String",
+      "description": "Description for swagger.name."
+    },
+    {
+      "name": "swagger.url",
+      "type": "java.lang.String",
+      "description": "Description for swagger.url."
+    },
+    {
+      "name": "swagger.email",
+      "type": "java.lang.String",
+      "description": "Description for swagger.email."
+    }
+  ] }
