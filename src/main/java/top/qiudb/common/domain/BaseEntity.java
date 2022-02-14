@@ -13,6 +13,8 @@ import top.qiudb.common.annotation.Comment;
 import top.qiudb.common.constant.DeleteEnum;
 
 import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import java.time.LocalDateTime;
@@ -28,6 +30,7 @@ public abstract class BaseEntity {
     @Id
     @Comment("用户账号")
     @TableId(type = IdType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", length = 32, nullable = false)
     private Long id;
 

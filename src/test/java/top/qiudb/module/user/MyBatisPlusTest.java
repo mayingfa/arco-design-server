@@ -1,128 +1,202 @@
 package top.qiudb.module.user;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import top.qiudb.common.constant.SexEnum;
 import top.qiudb.module.user.domain.entity.User;
-import top.qiudb.module.user.mapper.StudentMapper;
+import top.qiudb.module.user.mapper.UserMapper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@SpringBootTest
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+
 @Slf4j
+@SpringBootTest
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class MyBatisPlusTest {
 
     @Autowired
-    private StudentMapper studentMapper;
+    private UserMapper userMapper;
 
-    @Test
-    void testSelect() {
-        List<User> students = studentMapper.selectList(null);
-        students.forEach(System.out::println);
+    Long queryId() {
+        return queryId("测试0");
+    }
+
+    Long queryId(String name) {
+        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(User::getUserName, name);
+        User user = userMapper.selectOne(queryWrapper);
+        assertNotNull(user);
+        return user.getId();
     }
 
     @Test
-    void testSelectId() {
-        List<User> ids = studentMapper.list();
-        ids.forEach(System.out::println);
-    }
-
-    @Test
+    @Order(1)
     void insert() {
-        User student = User.builder().userName("小华").age(20).sex(SexEnum.MAN).build();
-        int insertFlag = studentMapper.insert(student);
-        log.info("插入影响行数,{} | 小华的ID: {}", insertFlag, student.getId());
+        User user = User.builder().account("1000").userName("测试0").password("123456")
+                .age(20).sex(SexEnum.WOMEN).email("123456@qq.com").phone("123456").build();
+        int insertFlag = userMapper.insert(user);
+        assertEquals(1, insertFlag);
     }
 
     @Test
-    void update() {
-        User student = User.builder().id(21L).userName("小华").age(30).build();
-        int insertFlag = studentMapper.updateById(student);
-        log.info("插入影响行数,{} | 小李的的年龄: {}", insertFlag, student.getAge());
+    @Order(2)
+    void batchInsert() {
+        List<User> userList = new ArrayList<>();
+        for (int i = 1; i <= 5; i++) {
+            User user = User.builder().account("100" + i).userName("测试" + i).password("123456")
+                    .age(15 * i).sex(SexEnum.MAN).email("123456@qq.com").phone("123456").build();
+            userList.add(user);
+        }
+        int insertFlag = userMapper.insertBatchSomeColumn(userList);
+        assertEquals(5, insertFlag);
     }
 
     @Test
-    void updateWrapper() {
-        UpdateWrapper<User> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.eq("name","小华");
-        User student = User.builder().age(22).build();
-        studentMapper.update(student, updateWrapper);
+    @Order(3)
+    void selectAll() {
+        List<User> userList = userMapper.selectList(null);
+        assertFalse(userList.isEmpty());
+        assertEquals(6, userList.size());
     }
 
     @Test
-    void deleteById() {
-        studentMapper.deleteById(23);
-    }
-
-    @Test
-    void deleteWrapper() {
-        UpdateWrapper<User> wrapper = new UpdateWrapper<>();
-        wrapper.eq("name","小华");
-        studentMapper.delete(wrapper);
-    }
-
-    @Test
-    void deleteBatchIds() {
-        List<Integer> idList = new ArrayList<>();
-        idList.add(7);
-        idList.add(8);
-        studentMapper.deleteBatchIds(idList);
-    }
-
-    @Test
+    @Order(4)
     void selectCount() {
-        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        queryWrapper.like("name","小");
-        System.out.println(studentMapper.selectCount(queryWrapper));
+        Integer count = userMapper.selectCount(null);
+        assertEquals(6, count);
     }
 
+    @Test
+    @Order(5)
+    void selectCountBySex() {
+        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(User::getSex, SexEnum.MAN);
+        Integer count = userMapper.selectCount(queryWrapper);
+        assertEquals(5, count);
+    }
 
     @Test
+    @Order(6)
     void selectById() {
-        User student = studentMapper.selectById(21);
-        System.out.println(student);
+        User user = userMapper.selectById(queryId());
+        assertNotNull(user);
+        assertEquals("测试0", user.getUserName());
     }
 
     @Test
+    @Order(7)
     void selectBatchIds() {
-        List<User> users = studentMapper.selectBatchIds(Arrays.asList(1, 3, 21));
-        users.forEach(System.out::println);
+        Long userId = queryId();
+        List<User> userList = userMapper.selectBatchIds(Arrays.asList(userId, userId + 1));
+        assertFalse(userList.isEmpty());
+        assertEquals(2, userList.size());
     }
 
     @Test
+    @Order(8)
     void selectOne() {
-        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("name","小华");
-        User user = studentMapper.selectOne(queryWrapper);
-        System.out.println(user);
+        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(User::getUserName, "测试0");
+        User user = userMapper.selectOne(queryWrapper);
+        assertNotNull(user);
+        assertEquals("1000", user.getAccount());
     }
 
     @Test
+    @Order(9)
     void selectPage() {
-        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        queryWrapper.gt("age",19);
-        Page<User> page = new Page<>(1, 1);
-        IPage<User> userIPage = studentMapper.selectPage(page, queryWrapper);
-        System.out.println("数据总数:" + userIPage.getTotal());
-        System.out.println("总页数:" + userIPage.getPages());
-        System.out.println("当前页:" + userIPage.getCurrent());
-        System.out.println("页大小:" + userIPage.getSize());
-        userIPage.getRecords().forEach(System.out::println);
+        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.likeRight(User::getUserName, "测试");
+        Page<User> page = new Page<>(1, 2);
+        IPage<User> userIPage = userMapper.selectPage(page, queryWrapper);
+        assertNotNull(userIPage);
+        assertEquals(6, userIPage.getTotal());
+        assertEquals(3, userIPage.getPages());
+        assertEquals(1, userIPage.getCurrent());
+        assertEquals(2, userIPage.getSize());
     }
 
     @Test
-    void selectName() {
-        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        queryWrapper.select("name");
-        List<User> students = studentMapper.selectList(queryWrapper);
-        students.forEach(item-> System.out.println(item.getUserName()));
+    @Order(10)
+    void selectField() {
+        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.select(User::getUserName, User::getAge);
+        List<User> userList = userMapper.selectList(queryWrapper);
+        assertFalse(userList.isEmpty());
+        assertEquals(6, userList.size());
+    }
+
+    @Test
+    @Order(11)
+    void updateById() {
+        Long userId = queryId();
+        User user = userMapper.selectById(userId);
+        assertNotNull(user);
+        assertEquals(SexEnum.WOMEN, user.getSex());
+        user.setSex(SexEnum.MAN);
+        int updateFlag = userMapper.updateById(user);
+        user = userMapper.selectById(userId);
+        assertEquals(1, updateFlag);
+        assertEquals(SexEnum.MAN, user.getSex());
+    }
+
+    @Test
+    @Order(12)
+    void updateWrapper() {
+        LambdaUpdateWrapper<User> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.eq(User::getUserName, "测试0");
+        User user = User.builder().age(30).build();
+        int updateFlag = userMapper.update(user, updateWrapper);
+        assertEquals(1, updateFlag);
+    }
+
+    @Test
+    @Order(13)
+    void deleteById() {
+        int deleteFlag = userMapper.deleteById(queryId());
+        assertEquals(1, deleteFlag);
+    }
+
+    @Test
+    @Order(14)
+    void deleteBatchIds() {
+        Long userId = queryId("测试1");
+        List<Long> idList = new ArrayList<>();
+        idList.add(userId);
+        idList.add(userId + 1);
+        int deleteFlag = userMapper.deleteBatchIds(idList);
+        assertEquals(2, deleteFlag);
+    }
+
+    @Test
+    @Order(15)
+    void deleteWrapper() {
+        LambdaUpdateWrapper<User> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.likeRight(User::getUserName, "测试");
+        int deleteFlag = userMapper.delete(updateWrapper);
+        assertNotEquals(0, deleteFlag);
+    }
+
+    @Test
+    @Order(16)
+    void physicallyDeleted() {
+        int deleteFlag = userMapper.deleteByName("测试%");
+        assertEquals(6, deleteFlag);
     }
 }

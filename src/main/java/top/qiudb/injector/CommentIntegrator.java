@@ -1,4 +1,4 @@
-package top.qiudb.handler;
+package top.qiudb.injector;
 
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.hibernate.boot.Metadata;
@@ -45,13 +45,14 @@ public class CommentIntegrator implements Integrator {
     }
 
     /**
-     * Not used.没有用
+     * Not used.
      * @param sessionFactoryImplementor The session factory being closed.
      * @param sessionFactoryServiceRegistry That session factory's service registry
      */
     @Override
     public void disintegrate(SessionFactoryImplementor sessionFactoryImplementor,
                              SessionFactoryServiceRegistry sessionFactoryServiceRegistry) {
+        // Do nothing.
     }
 
     /**

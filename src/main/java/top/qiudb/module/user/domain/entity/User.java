@@ -1,15 +1,15 @@
 package top.qiudb.module.user.domain.entity;
 
-
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import top.qiudb.common.annotation.Comment;
 import top.qiudb.common.constant.SexEnum;
 import top.qiudb.common.domain.BaseEntity;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -18,13 +18,12 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 
-
-@Data
 @Entity
-@SuperBuilder
 @Table(name = "user")
+@SuperBuilder
 @NoArgsConstructor
-@AllArgsConstructor
+@Setter
+@Getter
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class User extends BaseEntity implements Serializable {
@@ -46,7 +45,7 @@ public class User extends BaseEntity implements Serializable {
     private String password;
 
     @Comment("用户年龄")
-    @Column(name = "age", length = 1)
+    @Column(name = "age", length = 3)
     @NotNull(message = "用户年龄不能为空")
     private Integer age;
 

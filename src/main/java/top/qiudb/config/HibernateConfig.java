@@ -3,7 +3,7 @@ package top.qiudb.config;
 import org.hibernate.jpa.boot.spi.IntegratorProvider;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernatePropertiesCustomizer;
 import org.springframework.stereotype.Component;
-import top.qiudb.handler.CommentIntegrator;
+import top.qiudb.injector.CommentIntegrator;
 
 import java.util.Collections;
 import java.util.Map;
