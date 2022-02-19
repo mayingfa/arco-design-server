@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.stereotype.Component;
 import top.qiudb.common.constant.DeleteEnum;
+import top.qiudb.common.constant.LockedEnum;
 
 import java.time.LocalDateTime;
 
@@ -19,6 +20,10 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
         Object status = getFieldValByName("status", metaObject);
         if (null == status) {
             setFieldValByName("status", DeleteEnum.NOT_DELETE, metaObject);
+        }
+        Object locked = getFieldValByName("locked", metaObject);
+        if (null == locked) {
+            setFieldValByName("locked", LockedEnum.NOT_LOCKED, metaObject);
         }
     }
 

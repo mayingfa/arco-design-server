@@ -24,7 +24,7 @@ public class UserServiceImpl implements UserService {
         User user = new User();
         user.setId(1L);
         user.setUserName(DEFAULT_NAME);
-        user.setSex(SexEnum.MAN);
+        user.setGender(SexEnum.MAN);
         return user;
     }
 }

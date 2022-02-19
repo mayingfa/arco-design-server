@@ -19,7 +19,7 @@ import java.util.Iterator;
 import java.util.Optional;
 
 /**
- * Integrator used to process comment annotation.
+ * 用于处理@Comment注解，生成表字段注释
  */
 @Component
 public class CommentIntegrator implements Integrator {

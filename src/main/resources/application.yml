@@ -15,6 +15,9 @@ spring:
         show-sql: true
         hibernate:
             ddl-auto: update
+            naming:
+                # 1. 表名及字段全小写下划线分隔命名策略(默认)
+                physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
     thymeleaf:
         cache: true
         check-template: true
@@ -39,8 +42,8 @@ mybatis-plus:
     global-config:
         db-config:
             id-type: auto
-            logic-delete-value: 0
-            logic-not-delete-value: 1
+            logic-delete-value: 1
+            logic-not-delete-value: 0
 
 swagger:
     enable: true

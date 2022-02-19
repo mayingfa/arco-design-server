@@ -1,5 +1,6 @@
 package top.qiudb.config;
 
+import com.github.xiaoymin.knife4j.spring.annotations.EnableKnife4j;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,13 +14,16 @@ import springfox.documentation.service.ApiInfo;
 import springfox.documentation.service.Contact;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.net.InetAddress;
 
 
+@Slf4j
 @Configuration
 @EnableOpenApi
-@Slf4j
+@EnableKnife4j
+@EnableSwagger2
 public class SwaggerConfig {
     /**
      * 是否启用swagger文档
