@@ -24,10 +24,10 @@ import java.time.LocalDateTime;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-@Comment("用户表")
-@Table(name = "user")
+@Comment("管理员表")
+@Table(name = "admin")
 @EqualsAndHashCode(callSuper = true)
-public class User extends BaseEntity implements Serializable {
+public class Admin extends BaseEntity implements Serializable {
     @Comment("用户名")
     @Column(name = "user_name", length = 64)
     private String userName;

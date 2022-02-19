@@ -25,6 +25,11 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
         if (null == locked) {
             setFieldValByName("locked", LockedEnum.NOT_LOCKED, metaObject);
         }
+        Object sort = getFieldValByName("sort", metaObject);
+        if (null == sort) {
+            setFieldValByName("sort", 0, metaObject);
+        }
+
     }
 
     @Override

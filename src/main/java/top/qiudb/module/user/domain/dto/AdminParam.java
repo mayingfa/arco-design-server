@@ -17,17 +17,17 @@ import java.time.LocalDateTime;
 
 
 /**
- * 创建和修改用户的请求参数
+ * 创建和修改管理员信息的请求参数
  */
 @Getter
 @Setter
 @EqualsAndHashCode(callSuper = true)
-public class UserParam extends BaseDto implements Serializable {
+public class AdminParam extends BaseDto implements Serializable {
     @NotNull(message = "用户名不能为空")
     @Size(min = 6, max = 11, message = "用户名长度必须是6-11个字符")
     private String userName;
 
-    @NotNull(message = "用户密码不能为空")
+    @NotNull(message = "密码不能为空")
     @Size(min = 6, max = 11, message = "密码长度必须是6-16个字符")
     private String password;
 

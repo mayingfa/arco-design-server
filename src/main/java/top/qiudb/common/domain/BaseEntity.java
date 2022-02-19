@@ -27,7 +27,7 @@ public abstract class BaseEntity {
      * 主键id
      */
     @Id
-    @Comment("用户账号")
+    @Comment("唯一标识")
     @TableId(type = IdType.AUTO)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", length = 32, nullable = false)
