@@ -25,22 +25,22 @@ public enum ResultCode {
     /**
      * NO_PERMISSION 非法请求
      */
-    NO_PERMISSION(402,"非法请求"),
+    NO_PERMISSION(402, "非法请求"),
 
     /**
      * METHOD_NOT_ALLOWED 不合法的请求方式
      */
-    METHOD_NOT_ALLOWED(403,"不合法的请求方式"),
+    METHOD_NOT_ALLOWED(403, "不合法的请求方式"),
 
     /**
      * NOT_FOUND 找不到请求路径
      */
-    NOT_FOUND(404,"找不到请求路径"),
+    NOT_FOUND(404, "找不到请求路径"),
 
     /**
      * BOUND_STATEMENT_NOT_FOUNT 找不到方法
      */
-    BOUND_STATEMENT_NOT_FOUNT(405,"找不到方法"),
+    BOUND_STATEMENT_NOT_FOUNT(405, "找不到方法"),
 
     /**
      * ERROR 操作失败
@@ -55,32 +55,32 @@ public enum ResultCode {
     /**
      * CONNECTION_ERROR 网络连接请求失败
      */
-    CONNECTION_ERROR(502,"网络连接请求失败"),
+    CONNECTION_ERROR(502, "网络连接请求失败"),
 
     /**
      * DATABASE_ERROR 数据库异常
      */
-    DATABASE_ERROR(503,"数据库异常"),
+    DATABASE_ERROR(503, "数据库异常"),
 
     /**
      * CACHE_ERROR 缓存异常
      */
-    CACHE_ERROR(504,"缓存异常"),
+    CACHE_ERROR(504, "缓存异常"),
 
     /**
-     * NO_USER_EXIST 用户不存在
+     * LOGIN_ERROR 登录异常
      */
-    NO_USER_EXIST(600,"用户不存在"),
+    LOGIN_ERROR(600, "登录异常"),
 
     /**
-     * NO_USER_EXIST 重复注册
+     * TOKEN_EXPIRED 身份过期
      */
-    REPEAT_REGISTER(601,"重复注册"),
+    TOKEN_EXPIRED(601, "身份过期"),
 
     /**
-     * INVALID_PASSWORD 密码错误
+     * ACCOUNT_BANNED 账号封禁
      */
-    INVALID_PASSWORD(602,"密码错误");
+    ACCOUNT_BANNED(602, "账号封禁");
 
 
     private final int code;

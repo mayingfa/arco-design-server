@@ -2,6 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="top.qiudb.module.user.mapper.UserMapper">
     <delete id="deleteByName" parameterType="string">
-        delete from user where user_name like #{userName}
+        DELETE
+        FROM arco_design.user
+        WHERE user_name LIKE #{userName}
     </delete>
 </mapper>

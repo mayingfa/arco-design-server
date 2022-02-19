@@ -1,5 +1,6 @@
 package top.qiudb.module.user.service;
 
+import cn.dev33.satoken.stp.SaTokenInfo;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springframework.transaction.annotation.Transactional;
 import top.qiudb.module.user.domain.dto.AdminPageParam;
@@ -23,10 +24,10 @@ public interface AdminService {
 
     /**
      * 用户名登录
-     *
      * @param adminLoginParam 登录参数
+     * @return 生成的token
      */
-    void login(LoginParam adminLoginParam);
+    SaTokenInfo login(LoginParam adminLoginParam);
 
     /**
      * 手机号登录
@@ -96,10 +97,10 @@ public interface AdminService {
     void updatePassword(UpdateAdminPasswordParam updatePasswordParam);
 
     /**
-     * 修改管理员角色关系
+     * 更新管理员角色关系
      * @param adminId 管理员唯一标识
      * @param roleIds 角色唯一标识列表
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     void updateRole(Long adminId, List<Long> roleIds);
 }

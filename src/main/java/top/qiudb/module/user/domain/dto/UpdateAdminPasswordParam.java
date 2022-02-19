@@ -14,7 +14,7 @@ import javax.validation.constraints.NotEmpty;
 public class UpdateAdminPasswordParam {
     @NotEmpty(message = "用户名不能为空")
     @ApiModelProperty(value = "用户名", required = true)
-    private String username;
+    private String userName;
 
     @NotEmpty(message = "旧密码不能为空")
     @ApiModelProperty(value = "旧密码", required = true)

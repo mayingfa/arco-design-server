@@ -8,13 +8,16 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import top.qiudb.common.constant.LockedEnum;
 import top.qiudb.module.user.domain.entity.Admin;
 import top.qiudb.module.user.domain.entity.AdminRoleRelation;
+import top.qiudb.module.user.domain.entity.Resource;
 import top.qiudb.module.user.domain.entity.Role;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -49,6 +52,25 @@ class AdminRoleRelationMapperTest {
         adminRoleRelations.forEach(System.out::println);
         assertNotNull(adminRoleRelations);
         assertEquals(1, adminRoleRelations.size());
+    }
+
+    @Test
+    void getRoleList() {
+        List<Role> roleList = adminRoleRelationMapper.getRoleList(1L, LockedEnum.NOT_LOCKED);
+        roleList.forEach(System.out::println);
+    }
+
+    @Test
+    void getResourceList() {
+        List<Resource> resourceList = adminRoleRelationMapper.getResourceList(1L);
+        resourceList.forEach(System.out::println);
+    }
+
+    @Test
+    void getResourceUrlList() {
+        List<Resource> resourceList = adminRoleRelationMapper.getResourceList(1L);
+        List<String> urls = resourceList.stream().map(Resource::getUrl).collect(Collectors.toList());
+        urls.forEach(System.out::println);
     }
 
     private Long getAdminId(String adminName) {
