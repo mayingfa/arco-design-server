@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import top.qiudb.common.constant.SexEnum;
+import top.qiudb.common.constant.GenderEnum;
 import top.qiudb.module.user.domain.entity.Admin;
 
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ class AdminMapperTest {
             String encodePassword = SaSecureUtil.md5BySalt("123456", "123456789" + i);
             Admin admin = Admin.builder().userName("123456789" + i).password(encodePassword)
                     .nickName("管理员" + i).age(22).email("156245232" + i + "@qq.com")
-                    .gender(SexEnum.WOMEN).phone("1810568115" + i).identityCard("15114119880215141" + i)
+                    .gender(GenderEnum.WOMEN).phone("1810568115" + i).identityCard("15114119880215141" + i)
                     .avatar("avatar.png").note("个人介绍").build();
             users.add(admin);
         }

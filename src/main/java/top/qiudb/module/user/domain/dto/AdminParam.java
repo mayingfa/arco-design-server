@@ -4,7 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import top.qiudb.common.constant.LockedEnum;
-import top.qiudb.common.constant.SexEnum;
+import top.qiudb.common.constant.GenderEnum;
 import top.qiudb.common.domain.BaseDto;
 import top.qiudb.util.RegexpUtils;
 
@@ -36,7 +36,7 @@ public class AdminParam extends BaseDto implements Serializable {
 
     private Integer age;
 
-    private SexEnum gender;
+    private GenderEnum gender;
 
     @NotNull(message = "邮箱不能为空")
     @Email(message = "邮箱格式不正确")

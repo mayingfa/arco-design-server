@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import top.qiudb.common.annotation.Comment;
 import top.qiudb.common.constant.LockedEnum;
-import top.qiudb.common.constant.SexEnum;
+import top.qiudb.common.constant.GenderEnum;
 import top.qiudb.common.domain.BaseEntity;
 
 import javax.persistence.Column;
@@ -46,7 +46,7 @@ public class User extends BaseEntity implements Serializable {
 
     @Comment("性别：0->女；1->男")
     @Column(name = "gender", length = 1)
-    private SexEnum gender;
+    private GenderEnum gender;
 
     @Comment("邮箱")
     @Column(name = "email", length = 100)

@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import top.qiudb.common.constant.SexEnum;
+import top.qiudb.common.constant.GenderEnum;
 import top.qiudb.module.user.domain.entity.User;
 import top.qiudb.module.user.mapper.UserMapper;
 
@@ -46,7 +46,7 @@ class MyBatisPlusTest {
     @Order(1)
     void insert() {
         User user = User.builder().userName("1000").nickName("测试0").password("123456")
-                .age(20).gender(SexEnum.WOMEN).email("123456@qq.com").phone("123456").build();
+                .age(20).gender(GenderEnum.WOMEN).email("123456@qq.com").phone("123456").build();
         int insertFlag = userMapper.insert(user);
         assertEquals(1, insertFlag);
     }
@@ -57,7 +57,7 @@ class MyBatisPlusTest {
         List<User> userList = new ArrayList<>();
         for (int i = 1; i <= 5; i++) {
             User user = User.builder().userName("100" + i).nickName("测试" + i).password("123456")
-                    .age(15 * i).gender(SexEnum.MAN).email("123456@qq.com").phone("123456").build();
+                    .age(15 * i).gender(GenderEnum.MAN).email("123456@qq.com").phone("123456").build();
             userList.add(user);
         }
         int insertFlag = userMapper.insertBatchSomeColumn(userList);
@@ -83,7 +83,7 @@ class MyBatisPlusTest {
     @Order(5)
     void selectCountBySex() {
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(User::getGender, SexEnum.MAN);
+        queryWrapper.eq(User::getGender, GenderEnum.MAN);
         Long count = userMapper.selectCount(queryWrapper);
         assertEquals(5, count);
     }
@@ -145,12 +145,12 @@ class MyBatisPlusTest {
         Long userId = queryId();
         User user = userMapper.selectById(userId);
         assertNotNull(user);
-        assertEquals(SexEnum.WOMEN, user.getGender());
-        user.setGender(SexEnum.MAN);
+        assertEquals(GenderEnum.WOMEN, user.getGender());
+        user.setGender(GenderEnum.MAN);
         int updateFlag = userMapper.updateById(user);
         user = userMapper.selectById(userId);
         assertEquals(1, updateFlag);
-        assertEquals(SexEnum.MAN, user.getGender());
+        assertEquals(GenderEnum.MAN, user.getGender());
     }
 
     @Test

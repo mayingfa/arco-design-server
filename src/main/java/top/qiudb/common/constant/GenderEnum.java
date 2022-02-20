@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.annotation.IEnum;
 import top.qiudb.common.domain.BaseEnum;
 
 
-public enum SexEnum implements IEnum<Integer>, BaseEnum<Integer> {
+public enum GenderEnum implements IEnum<Integer>, BaseEnum<Integer> {
     /**
      * 女 0
      */
@@ -19,7 +19,7 @@ public enum SexEnum implements IEnum<Integer>, BaseEnum<Integer> {
 
     private final String desc;
 
-    SexEnum(Integer value, String desc) {
+    GenderEnum(Integer value, String desc) {
         this.value = value;
         this.desc = desc;
     }

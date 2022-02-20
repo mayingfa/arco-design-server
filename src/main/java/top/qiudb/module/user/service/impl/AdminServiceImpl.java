@@ -60,7 +60,7 @@ public class AdminServiceImpl implements AdminService {
         if (!encodePassword.equals(adminVo.getPassword())) {
             Asserts.fail("用户名或密码错误");
         }
-        if(LockedEnum.LOCKED.equals(adminVo.getLocked())){
+        if (LockedEnum.LOCKED.equals(adminVo.getLocked())) {
             StpUtil.disable(adminVo.getId(), -1);
         }
         StpUtil.login(adminVo.getId());

@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import top.qiudb.common.constant.SexEnum;
+import top.qiudb.common.constant.GenderEnum;
 import top.qiudb.module.user.domain.entity.User;
 
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ class UserMapperTest {
         for (int i = 0; i < 3; i++) {
             User user = User.builder().userName("123456789" + i).password("123456")
                     .nickName("用户" + i).age(22).email("156245232" + i + "@qq.com")
-                    .gender(SexEnum.MAN).phone("1810568115" + i).identityCard("15114119880215141" + i)
+                    .gender(GenderEnum.MAN).phone("1810568115" + i).identityCard("15114119880215141" + i)
                     .avatar("avatar.png").note("个人介绍").build();
             users.add(user);
         }

@@ -1,9 +1,14 @@
 package top.qiudb.module.user.domain.vo;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import top.qiudb.common.constant.GenderEnum;
 import top.qiudb.common.constant.LockedEnum;
-import top.qiudb.common.constant.SexEnum;
 import top.qiudb.common.domain.BaseVo;
 
 import java.time.LocalDateTime;
@@ -13,6 +18,7 @@ import java.time.LocalDateTime;
  */
 @Getter
 @Setter
+@EqualsAndHashCode(callSuper = true)
 public class AdminVo extends BaseVo {
     private String userName;
 
@@ -22,7 +28,7 @@ public class AdminVo extends BaseVo {
 
     private Integer age;
 
-    private SexEnum gender;
+    private GenderEnum gender;
 
     private String email;
 
@@ -36,5 +42,7 @@ public class AdminVo extends BaseVo {
 
     private LockedEnum locked;
 
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime loginTime;
 }

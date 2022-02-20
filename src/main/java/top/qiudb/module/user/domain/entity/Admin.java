@@ -2,14 +2,18 @@ package top.qiudb.module.user.domain.entity;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import top.qiudb.common.annotation.Comment;
+import top.qiudb.common.constant.GenderEnum;
 import top.qiudb.common.constant.LockedEnum;
-import top.qiudb.common.constant.SexEnum;
 import top.qiudb.common.domain.BaseEntity;
 
 import javax.persistence.Column;
@@ -46,7 +50,7 @@ public class Admin extends BaseEntity implements Serializable {
 
     @Comment("性别：0->女；1->男")
     @Column(name = "gender", length = 1)
-    private SexEnum gender;
+    private GenderEnum gender;
 
     @Comment("邮箱")
     @Column(name = "email", length = 100)
@@ -75,5 +79,7 @@ public class Admin extends BaseEntity implements Serializable {
 
     @Comment("最后登录时间")
     @Column(name = "login_time")
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime loginTime;
 }
