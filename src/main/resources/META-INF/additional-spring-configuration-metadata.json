@@ -24,5 +24,35 @@
       "name": "swagger.email",
       "type": "java.lang.String",
       "description": "Description for swagger.email."
+    },
+    {
+      "name": "sms.aliyun.accessKeySecret",
+      "type": "java.lang.String",
+      "description": "Description for sms.aliyun.accessKeySecret."
+    },
+    {
+      "name": "sms.aliyun.templateCode",
+      "type": "java.lang.String",
+      "description": "Description for sms.aliyun.templateCode."
+    },
+    {
+      "name": "sms.aliyun.signName",
+      "type": "java.lang.String",
+      "description": "Description for sms.aliyun.signName."
+    },
+    {
+      "name": "sms.aliyun.accessKeyId",
+      "type": "java.lang.String",
+      "description": "Description for sms.aliyun.accessKeyId."
+    },
+    {
+      "name": "redis.key.expire.authCode",
+      "type": "java.lang.String",
+      "description": "Description for redis.expire.authCode."
+    },
+    {
+      "name": "redis.key.prefix.authCode",
+      "type": "java.lang.String",
+      "description": "Description for redis.key.prefix.authCode."
     }
   ] }

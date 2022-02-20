@@ -20,8 +20,24 @@ public class Asserts {
         throw new ApiException(message);
     }
 
+    public static void fail(String message, Throwable cause) {
+        throw new ApiException(message, cause);
+    }
+
     public static void checkNull(Object data, String message) {
         if (null == data) {
+            fail(message);
+        }
+    }
+
+    public static void checkTrue(Boolean data, String message) {
+        if (!data) {
+            fail(message);
+        }
+    }
+
+    public static void checkFalse(Boolean data, String message) {
+        if (data) {
             fail(message);
         }
     }

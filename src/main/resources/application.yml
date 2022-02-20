@@ -60,6 +60,21 @@ sa-token:
   # 是否输出操作日志
   is-log: true
 
+sms:
+  aliyun:
+    accessKeyId: your accessKeyId
+    accessKeySecret: your accessKeySecret
+    templateCode: SMS_215344833
+    signName: 花卷买卖
+
+redis:
+  key:
+    prefix:
+      authCode: "auth-code:"
+    expire:
+      # 验证码超期时间10分钟
+      authCode: 600
+
 swagger:
   enable: true
   name: ma_ying_fa
