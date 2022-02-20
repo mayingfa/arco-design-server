@@ -80,7 +80,12 @@ public enum ResultCode {
     /**
      * ACCOUNT_BANNED 账号封禁
      */
-    ACCOUNT_BANNED(602, "账号封禁");
+    ACCOUNT_BANNED(602, "账号封禁"),
+
+    /**
+     * NOT_PERMISSIONS 无此权限
+     */
+    NOT_PERMISSIONS(603, "无此权限");
 
 
     private final int code;

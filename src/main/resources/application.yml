@@ -1,67 +1,83 @@
 server:
-    port: 8080
-    servlet:
-        context-path: /api
+  port: 8080
+  servlet:
+    context-path: /api
 
 spring:
-    application:
-        name: arco-design-server
-    profiles:
-        active: dev #默认为开发环境
+  application:
+    name: arco-design-server
+  profiles:
+    active: dev #默认为开发环境
+  servlet:
+    multipart:
+      enabled: true #开启文件上传
+      max-file-size: 10MB #限制文件上传大小为10M
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+      naming:
+        # 1. 表名及字段全小写下划线分隔命名策略(默认)
+        physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+  thymeleaf:
+    cache: true
+    check-template: true
+    check-template-location: true
+    enabled: true
+    encoding: UTF-8
+    excluded-view-names: ''
+    mode: HTML5
+    prefix: classpath:/templates/
+    suffix: .html
     servlet:
-        multipart:
-            enabled: true #开启文件上传
-            max-file-size: 10MB #限制文件上传大小为10M
-    jpa:
-        show-sql: true
-        hibernate:
-            ddl-auto: update
-            naming:
-                # 1. 表名及字段全小写下划线分隔命名策略(默认)
-                physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
-    thymeleaf:
-        cache: true
-        check-template: true
-        check-template-location: true
-        enabled: true
-        encoding: UTF-8
-        excluded-view-names: ''
-        mode: HTML5
-        prefix: classpath:/templates/
-        suffix: .html
-        servlet:
-            content-type: text/html
+      content-type: text/html
 
 mybatis-plus:
-    configuration:
-        map-underscore-to-camel-case: true
-        log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-    mapper-locations: classpath*:/mapper/**/*.xml
-    type-aliases-package: top.qiudb.module.*.domain.entity
-    type-enums-package: top.qiudb.common.constant
-    global-config:
-        db-config:
-            id-type: auto
-            logic-delete-value: 1
-            logic-not-delete-value: 0
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath*:/mapper/**/*.xml
+  type-aliases-package: top.qiudb.module.*.domain.entity
+  type-enums-package: top.qiudb.common.constant
+  global-config:
+    db-config:
+      id-type: auto
+      logic-delete-value: 1
+      logic-not-delete-value: 0
 
 sa-token:
-    token-name: satoken
-    # token有效期，单位s 默认30天, -1代表永不过期
-    timeout: 2592000
-    # token临时有效期 (指定时间内无操作就视为token过期) 单位: 秒
-    activity-timeout: -1
-    # 是否允许同一账号并发登录 (为true时允许一起登录, 为false时新登录挤掉旧登录)
-    is-concurrent: false
-    # 在多人登录同一账号时，是否共用一个token (为true时所有登录共用一个token, 为false时每次登录新建一个token)
-    is-share: false
-    # token风格
-    token-style: uuid
-    # 是否输出操作日志
-    is-log: true
+  token-name: satoken
+  # token有效期，单位s 默认30天, -1代表永不过期
+  timeout: 2592000
+  # token临时有效期 (指定时间内无操作就视为token过期) 单位: 秒
+  activity-timeout: -1
+  # 是否允许同一账号并发登录 (为true时允许一起登录, 为false时新登录挤掉旧登录)
+  is-concurrent: false
+  # 在多人登录同一账号时，是否共用一个token (为true时所有登录共用一个token, 为false时每次登录新建一个token)
+  is-share: false
+  # token风格
+  token-style: uuid
+  # 是否输出操作日志
+  is-log: true
 
 swagger:
-    enable: true
-    name: ma_ying_fa
-    url: https://gitee.com/ma_ying_fa
-    email: qiudb.top@aliyun.com
+  enable: true
+  name: ma_ying_fa
+  url: https://gitee.com/ma_ying_fa
+  email: qiudb.top@aliyun.com
+
+secure:
+  ignored:
+    urls:
+      - /admin/register
+      - /admin/login/username
+      - /admin/login/phone
+      - /alipay/**
+      - /sms/**
+      - /upload/**
+      - /util/**
+      - /static/**
+      - /doc.html
+      - /webjars/**
+      - /swagger-resources/**
+      - /v3/api-docs

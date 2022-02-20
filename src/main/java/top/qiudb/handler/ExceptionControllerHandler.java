@@ -2,6 +2,7 @@ package top.qiudb.handler;
 
 import cn.dev33.satoken.exception.DisableLoginException;
 import cn.dev33.satoken.exception.NotLoginException;
+import cn.dev33.satoken.exception.NotPermissionException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -16,7 +17,7 @@ import top.qiudb.common.exception.ApiException;
 @RestControllerAdvice
 public class ExceptionControllerHandler {
     @ExceptionHandler(ApiException.class)
-    public CommonResult<String> apiExceptionHandler(ApiException e) {
+    public CommonResult<String> handlerApiException(ApiException e) {
         return new CommonResult<>(ResultCode.ERROR, e.getMessage());
     }
 
@@ -57,4 +58,10 @@ public class ExceptionControllerHandler {
     public CommonResult<String> handlerDisableLoginException() {
         return new CommonResult<>(ResultCode.ACCOUNT_BANNED, "此账号已被封禁");
     }
+
+    @ExceptionHandler(NotPermissionException.class)
+    public CommonResult<String> handlerNotPermissionException() {
+        return new CommonResult<>(ResultCode.NOT_PERMISSIONS, "无此权限");
+    }
+
 }

@@ -35,7 +35,7 @@ public interface AdminService {
      * @param phoneLoginParam 登录参数
      * @return 生成的token
      */
-    String phoneLogin(PhoneLoginParam phoneLoginParam);
+    SaTokenInfo phoneLogin(PhoneLoginParam phoneLoginParam);
 
     /**
      * 根据ID获取管理员信息
@@ -89,6 +89,20 @@ public interface AdminService {
      * @param adminId 管理员唯一标识
      */
     void delete(Long adminId);
+
+    /**
+     * 锁定指定用户
+     *
+     * @param adminId 管理员唯一标识
+     */
+    void locked(Long adminId);
+
+    /**
+     * 解锁指定用户
+     *
+     * @param adminId 管理员唯一标识
+     */
+    void unlock(Long adminId);
 
     /**
      * 修改密码

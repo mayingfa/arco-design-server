@@ -36,4 +36,23 @@ public class CommonResult<T> {
         this.message = message;
         this.data = data;
     }
+
+    /**
+     * 成功返回结果
+     *
+     * @param data 获取的数据
+     */
+    public static <T> CommonResult<T> success(T data) {
+        return new CommonResult<>(ResultCode.SUCCESS.getCode(), ResultCode.SUCCESS.getMessage(), data);
+    }
+
+    /**
+     * 成功返回结果
+     *
+     * @param data 获取的数据
+     * @param  message 提示信息
+     */
+    public static <T> CommonResult<T> success(T data, String message) {
+        return new CommonResult<>(ResultCode.SUCCESS.getCode(), message, data);
+    }
 }

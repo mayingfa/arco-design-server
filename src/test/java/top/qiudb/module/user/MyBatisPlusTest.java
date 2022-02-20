@@ -75,7 +75,7 @@ class MyBatisPlusTest {
     @Test
     @Order(4)
     void selectCount() {
-        Integer count = userMapper.selectCount(null);
+        Long count = userMapper.selectCount(null);
         assertEquals(6, count);
     }
 
@@ -84,7 +84,7 @@ class MyBatisPlusTest {
     void selectCountBySex() {
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(User::getGender, SexEnum.MAN);
-        Integer count = userMapper.selectCount(queryWrapper);
+        Long count = userMapper.selectCount(queryWrapper);
         assertEquals(5, count);
     }
 

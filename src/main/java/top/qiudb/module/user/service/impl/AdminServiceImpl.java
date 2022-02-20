@@ -60,17 +60,22 @@ public class AdminServiceImpl implements AdminService {
         if (!encodePassword.equals(adminVo.getPassword())) {
             Asserts.fail("用户名或密码错误");
         }
+        if(LockedEnum.LOCKED.equals(adminVo.getLocked())){
+            StpUtil.disable(adminVo.getId(), -1);
+        }
         StpUtil.login(adminVo.getId());
         return StpUtil.getTokenInfo();
     }
 
     @Override
-    public String phoneLogin(PhoneLoginParam phoneLoginParam) {
-        return null;
+    public SaTokenInfo phoneLogin(PhoneLoginParam phoneLoginParam) {
+        StpUtil.login(1L);
+        return StpUtil.getTokenInfo();
     }
 
     @Override
     public AdminVo getById(Long adminId) {
+        Asserts.checkNull(adminId, "ID不允许为空");
         Admin admin = adminMapper.selectById(adminId);
         Asserts.checkNull(admin, "账号不存在");
         AdminVo adminVo = new AdminVo();
@@ -100,7 +105,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public List<RoleVo> getRoleList(Long adminId) {
-        Asserts.checkNull(adminId, "管理员ID不允许为空");
+        Asserts.checkNull(adminId, "ID不允许为空");
         List<Role> roles = adminRoleRelationMapper.getRoleList(adminId, LockedEnum.NOT_LOCKED);
         Asserts.checkNull(roles, "获取角色信息失败");
         List<RoleVo> roleVos = new ArrayList<>();
@@ -114,7 +119,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public List<ResourceVo> getResourceList(Long adminId) {
-        Asserts.checkNull(adminId, "管理员ID不允许为空");
+        Asserts.checkNull(adminId, "ID不允许为空");
         List<Resource> resources = adminRoleRelationMapper.getResourceList(adminId);
         Asserts.checkNull(resources, "获取资源权限失败");
         List<ResourceVo> resourceVos = new ArrayList<>();
@@ -153,6 +158,33 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
+    public void locked(Long adminId) {
+        Asserts.checkNull(adminId, "ID不允许为空");
+        StpUtil.kickout(adminId);
+        StpUtil.disable(adminId, -1);
+        if (!StpUtil.isDisable(adminId)) {
+            Asserts.fail("账号锁定失败");
+        }
+        Admin admin = new Admin();
+        admin.setId(adminId);
+        admin.setLocked(LockedEnum.LOCKED);
+        Asserts.checkUpdate(adminMapper.updateById(admin), "账号锁定失败");
+    }
+
+    @Override
+    public void unlock(Long adminId) {
+        Asserts.checkNull(adminId, "ID不允许为空");
+        StpUtil.untieDisable(adminId);
+        if (StpUtil.isDisable(adminId)) {
+            Asserts.fail("账号解锁失败");
+        }
+        Admin admin = new Admin();
+        admin.setId(adminId);
+        admin.setLocked(LockedEnum.NOT_LOCKED);
+        Asserts.checkUpdate(adminMapper.updateById(admin), "账号解锁失败");
+    }
+
+    @Override
     public void updatePassword(UpdateAdminPasswordParam param) {
         String userName = param.getUserName();
         AdminVo adminVo = getByUserName(userName);
@@ -163,6 +195,7 @@ public class AdminServiceImpl implements AdminService {
         String newPassword = SaSecureUtil.md5BySalt(param.getNewPassword(), param.getUserName());
         Admin admin = Admin.builder().id(adminVo.getId()).password(newPassword).build();
         Asserts.checkUpdate(adminMapper.updateById(admin), "密码修改失败");
+        StpUtil.logout(adminVo.getId());
     }
 
     @Override
@@ -201,7 +234,7 @@ public class AdminServiceImpl implements AdminService {
      * @param adminId 管理员唯一标识
      */
     private void deleteOriginalRole(Long adminId) {
-        Asserts.checkNull(adminId, "管理员ID不允许为空");
+        Asserts.checkNull(adminId, "ID不允许为空");
         LambdaQueryWrapper<AdminRoleRelation> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(AdminRoleRelation::getAdminId, adminId);
         Long count = adminRoleRelationMapper.selectCount(queryWrapper);
@@ -209,7 +242,7 @@ public class AdminServiceImpl implements AdminService {
         updateWrapper.eq(AdminRoleRelation::getAdminId, adminId);
         int deleteNumber = adminRoleRelationMapper.delete(updateWrapper);
         if (count.intValue() != deleteNumber) {
-            Asserts.fail("角色信息更新失败");
+            Asserts.fail("角色授权失败");
         }
     }
 
@@ -229,6 +262,6 @@ public class AdminServiceImpl implements AdminService {
             adminRoleRelations.add(adminRoleRelation);
         }
         Asserts.checkUpdate(adminRoleRelationMapper.insertBatchSomeColumn(adminRoleRelations),
-                "角色更新失败");
+                "角色授权失败");
     }
 }
