@@ -20,6 +20,7 @@ import top.qiudb.module.user.domain.dto.AdminPageParam;
 import top.qiudb.module.user.domain.dto.AdminParam;
 import top.qiudb.module.user.domain.dto.LoginParam;
 import top.qiudb.module.user.domain.dto.PhoneLoginParam;
+import top.qiudb.module.user.domain.dto.RegisterParam;
 import top.qiudb.module.user.domain.dto.UpdateAdminPasswordParam;
 import top.qiudb.module.user.domain.vo.AdminVo;
 import top.qiudb.module.user.domain.vo.RoleVo;
@@ -39,8 +40,8 @@ public class AdminController {
 
     @ApiOperation(value = "用户注册")
     @PostMapping(value = "/register")
-    public CommonResult<String> register(@Validated @RequestBody AdminParam adminParam) {
-        adminService.register(adminParam);
+    public CommonResult<String> register(@Validated @RequestBody RegisterParam param) {
+        adminService.register(param);
         return CommonResult.success("注册成功");
     }
 

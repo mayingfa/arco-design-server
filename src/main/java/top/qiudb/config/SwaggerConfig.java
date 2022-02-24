@@ -30,14 +30,19 @@ public class SwaggerConfig {
      */
     @Value("${swagger.enable}")
     private boolean enable;
+
     @Value("${server.port}")
     private int port;
+
     @Value("${server.servlet.context-path:}")
     private String contextPath;
+
     @Value("${swagger.name}")
     private String name;
+
     @Value("${swagger.url}")
     private String url;
+
     @Value("${swagger.email}")
     private String email;
 
@@ -49,7 +54,7 @@ public class SwaggerConfig {
                 .enable(enable)
                 .apiInfo(apiInfo())
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("top.qiudb.module"))
+                .apis(RequestHandlerSelectors.basePackage("top.qiudb"))
                 .paths(PathSelectors.any())
                 .build();
         log.info("项目接口文档地址: http://{}:{}{}/doc.html", ipAddress, port, contextPath);

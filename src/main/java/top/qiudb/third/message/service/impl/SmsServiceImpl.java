@@ -1,4 +1,4 @@
-package top.qiudb.third.message.impl;
+package top.qiudb.third.message.service.impl;
 
 import com.aliyuncs.CommonRequest;
 import com.aliyuncs.CommonResponse;
@@ -14,13 +14,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import top.qiudb.common.exception.Asserts;
-import top.qiudb.third.message.SmsService;
+import top.qiudb.third.message.service.SmsService;
 import top.qiudb.third.redis.RedisService;
 import top.qiudb.util.StringTools;
 
 import java.util.HashMap;
 import java.util.Map;
-
 
 @Slf4j
 @Service
@@ -48,8 +47,45 @@ public class SmsServiceImpl implements SmsService {
 
     @Override
     public void sendSms(String phone) {
+        IAcsClient client = getClient();
+        CommonRequest request = setParameter(phone);
+        String authCode = StringTools.getRandCode();
+        String authCodeKey = keyPrefix + phone;
+        redisService.set(authCodeKey, authCode, keyExpire);
+        Asserts.checkTrue(redisService.hasKey(authCodeKey), "短信验证码发送失败");
+        Map<String, Object> param = new HashMap<>(1);
+        param.put("code", authCode);
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            request.putQueryParameter("TemplateParam", mapper.writeValueAsString(param));
+            CommonResponse response = client.getCommonResponse(request);
+            log.info("验证码为：{}", authCode);
+            log.info("发送短信：{}", response.getData());
+            if (!response.getHttpResponse().isSuccess()) {
+                Asserts.fail("短信验证码发送失败");
+            }
+        } catch (ClientException | JsonProcessingException e) {
+            Asserts.fail("短信验证码发送失败", e);
+        }
+    }
+
+    /**
+     * 获取客户端对象
+     *
+     * @return IAcsClient
+     */
+    private IAcsClient getClient() {
         DefaultProfile profile = DefaultProfile.getProfile("cn-hangzhou", accessKeyId, accessSecret);
-        IAcsClient client = new DefaultAcsClient(profile);
+        return new DefaultAcsClient(profile);
+    }
+
+    /**
+     * 设置短信服务所需参数
+     *
+     * @param phone 要发送的手机号
+     * @return 请求对象
+     */
+    private CommonRequest setParameter(String phone) {
         CommonRequest request = new CommonRequest();
         request.setSysMethod(MethodType.POST);
         request.setSysDomain("dysmsapi.aliyuncs.com");
@@ -59,24 +95,6 @@ public class SmsServiceImpl implements SmsService {
         request.putQueryParameter("PhoneNumbers", phone);
         request.putQueryParameter("SignName", signName);
         request.putQueryParameter("TemplateCode", templateCode);
-        ObjectMapper mapper = new ObjectMapper();
-        Map<String, Object> param = new HashMap<>(2);
-        String randCode = StringTools.getRandCode();
-        String authCodeKey = keyPrefix + phone;
-        redisService.set(authCodeKey, randCode, keyExpire);
-        Asserts.checkTrue(redisService.hasKey(authCodeKey), "短信验证码发送失败");
-        param.put("code", randCode);
-        log.info("验证码为：{}", randCode);
-        try {
-            request.putQueryParameter("TemplateParam", mapper.writeValueAsString(param));
-            CommonResponse response = client.getCommonResponse(request);
-            log.info("发送短信：{}", response.getData());
-            if (!response.getHttpResponse().isSuccess()) {
-                Asserts.fail("短信验证码发送失败");
-            }
-        } catch (ClientException | JsonProcessingException e) {
-            log.error("短信发送失败", e);
-            Asserts.fail("短信验证码发送失败", e);
-        }
+        return request;
     }
 }

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>验证码</title>
+    <style>
+        .email-body {
+            padding: 20px;
+            color: #40485B;
+            font-size: 14px;
+            background-color: #f8f8f8;
+        }
+
+        .logo{
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .logo img{
+            width: 48px;
+            height: 48px;
+            vertical-align: bottom;
+        }
+
+        .logo span{
+            font-size: 28px;
+            font-weight: bolder;
+            line-height: 50px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .title {
+            font-size: 18px;
+            text-align: left;
+            line-height: 30px;
+            padding: 10px 20px;
+            background: #fcfcfc;
+            border: 1px solid #E3E9ED;
+            border-bottom: none;
+        }
+
+        .content {
+            padding: 20px;
+            margin-bottom: 20px;
+            line-height: 1.7;
+            background: #fff;
+            border: 1px solid #E3E9ED;
+
+        }
+
+        .content a {
+            color: #FE7300;
+            text-decoration: underline;
+        }
+
+        .footer {
+            max-width: 600px;
+            margin: 0 auto;
+            color: #9B9B9B;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+<div class="email-body">
+    <div class="logo">
+        <img alt="logo" src="http://p3-armor.byteimg.com/tos-cn-i-49unhts6dw/dfdba5317c0c20ce20e64fac803d52bc.svg~tplv-49unhts6dw-image.image">
+        <span>arco.design</span>
+    </div>
+    <div class="container">
+        <div class="title">
+            <span>注册验证</span>
+        </div>
+        <div class="content">
+            <p>您好
+                <!--/*@thymesVar id="email" type="java.lang.String"*/-->
+                <a th:href="${'mailto:'+ email}" th:text="${email}" rel="noopener" target="_blank">
+                    qiudb.top@aliyun.com
+                </a>
+            </p>
+            <p>请使用下面的授权码验证您的操作，验证码 10 分钟内有效。</p>
+            <!--/*@thymesVar id="code" type="java.lang.String"*/-->
+            <p>授权码：<span th:text="${code}">384002</span></p>
+        </div>
+    </div>
+    <div class="footer">
+        @arco_design.com
+    </div>
+</div>
+</body>
+</html>

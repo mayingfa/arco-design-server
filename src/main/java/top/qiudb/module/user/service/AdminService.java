@@ -7,6 +7,7 @@ import top.qiudb.module.user.domain.dto.AdminPageParam;
 import top.qiudb.module.user.domain.dto.AdminParam;
 import top.qiudb.module.user.domain.dto.LoginParam;
 import top.qiudb.module.user.domain.dto.PhoneLoginParam;
+import top.qiudb.module.user.domain.dto.RegisterParam;
 import top.qiudb.module.user.domain.dto.UpdateAdminPasswordParam;
 import top.qiudb.module.user.domain.vo.AdminVo;
 import top.qiudb.module.user.domain.vo.ResourceVo;
@@ -18,9 +19,9 @@ public interface AdminService {
     /**
      * 注册功能
      *
-     * @param adminParam 管理员信息
+     * @param registerParam 注册账户参数
      */
-    void register(AdminParam adminParam);
+    void register(RegisterParam registerParam);
 
     /**
      * 用户名登录
@@ -52,6 +53,14 @@ public interface AdminService {
      * @return Admin
      */
     AdminVo getByUserName(String userName);
+
+    /**
+     * 根据手机号码获取管理员信息
+     *
+     * @param phone 手机号码
+     * @return Admin
+     */
+    AdminVo getByPhone(String phone);
 
     /**
      * 分页查询管理员信息

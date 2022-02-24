@@ -1,5 +1,6 @@
 package top.qiudb.common.exception;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.Collection;
@@ -7,6 +8,7 @@ import java.util.Collection;
 /**
  * 断言处理类，用于抛出各种API异常
  */
+@Slf4j
 public class Asserts {
     private static final int UPDATE_FAILED_FLAG = 0;
 
@@ -21,6 +23,7 @@ public class Asserts {
     }
 
     public static void fail(String message, Throwable cause) {
+        log.error(message, cause);
         throw new ApiException(message, cause);
     }
 

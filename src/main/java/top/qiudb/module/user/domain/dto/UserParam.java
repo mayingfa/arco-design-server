@@ -42,8 +42,8 @@ public class UserParam extends BaseDto implements Serializable {
     @Email(message = "邮箱格式不正确")
     private String email;
 
-    @NotNull(message = "手机号不能为空")
-    @Pattern(regexp = RegexpUtils.MOBILE_PHONE_REGEXP, message = "手机号格式不正确")
+    @NotNull(message = "手机号码不能为空")
+    @Pattern(regexp = RegexpUtils.MOBILE_PHONE_REGEXP, message = "手机号码格式不正确")
     private String phone;
 
     @Pattern(regexp = RegexpUtils.IDENTITY_CARD_REGEXP, message = "身份证格式不正确")

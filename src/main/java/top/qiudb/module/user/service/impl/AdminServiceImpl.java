@@ -10,6 +10,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import top.qiudb.common.constant.LockedEnum;
 import top.qiudb.common.exception.Asserts;
@@ -17,6 +18,7 @@ import top.qiudb.module.user.domain.dto.AdminPageParam;
 import top.qiudb.module.user.domain.dto.AdminParam;
 import top.qiudb.module.user.domain.dto.LoginParam;
 import top.qiudb.module.user.domain.dto.PhoneLoginParam;
+import top.qiudb.module.user.domain.dto.RegisterParam;
 import top.qiudb.module.user.domain.dto.UpdateAdminPasswordParam;
 import top.qiudb.module.user.domain.entity.Admin;
 import top.qiudb.module.user.domain.entity.AdminRoleRelation;
@@ -28,6 +30,7 @@ import top.qiudb.module.user.domain.vo.RoleVo;
 import top.qiudb.module.user.mapper.AdminMapper;
 import top.qiudb.module.user.mapper.AdminRoleRelationMapper;
 import top.qiudb.module.user.service.AdminService;
+import top.qiudb.third.redis.RedisService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,17 +41,32 @@ public class AdminServiceImpl implements AdminService {
     AdminMapper adminMapper;
 
     @Autowired
+    RedisService redisService;
+
+    @Autowired
     AdminRoleRelationMapper adminRoleRelationMapper;
+
+    @Value("${redis.key.prefix.authCode}")
+    private String keyPrefix;
+
+    @Value("${redis.key.expire.authCode}")
+    private Long keyExpire;
 
 
     @Override
-    public void register(AdminParam adminParam) {
-        Admin admin = new Admin();
-        BeanUtils.copyProperties(adminParam, admin);
-        if (getAdminCount(admin.getUserName()) > 0) {
+    public void register(RegisterParam registerParam) {
+        String authCodeKey = keyPrefix + registerParam.getEmail();
+        Asserts.checkTrue(redisService.hasKey(authCodeKey), "验证码已过期，请重新获取");
+        String authCode = String.valueOf(redisService.get(authCodeKey));
+        Asserts.checkTrue(registerParam.getAuthCode().equals(authCode), "验证码错误");
+        if (getAdminCount(registerParam.getEmail()) > 0) {
             Asserts.fail("账号已被注册");
         }
-        String encodePassword = SaSecureUtil.md5BySalt(admin.getPassword(), admin.getUserName());
+        Admin admin = new Admin();
+        admin.setNickName(registerParam.getNickName());
+        admin.setUserName(registerParam.getEmail());
+        admin.setEmail(registerParam.getEmail());
+        String encodePassword = SaSecureUtil.md5BySalt(registerParam.getPassword(), admin.getUserName());
         admin.setPassword(encodePassword);
         Asserts.checkUpdate(adminMapper.insert(admin), "账号注册失败");
     }
@@ -69,7 +87,12 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public SaTokenInfo phoneLogin(PhoneLoginParam phoneLoginParam) {
-        StpUtil.login(1L);
+        String phone = phoneLoginParam.getPhone();
+        String authCodeKey = keyPrefix + phone;
+        Asserts.checkTrue(redisService.hasKey(authCodeKey), "验证码已过期，请重新获取");
+        String authCode = String.valueOf(redisService.get(authCodeKey));
+        Asserts.checkTrue(phoneLoginParam.getAuthCode().equals(authCode), "验证码错误");
+        StpUtil.login(getByPhone(phone).getId());
         return StpUtil.getTokenInfo();
     }
 
@@ -87,11 +110,14 @@ public class AdminServiceImpl implements AdminService {
     public AdminVo getByUserName(String userName) {
         LambdaQueryWrapper<Admin> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Admin::getUserName, userName);
-        Admin admin = adminMapper.selectOne(queryWrapper);
-        Asserts.checkNull(admin, "账号不存在");
-        AdminVo adminVo = new AdminVo();
-        BeanUtils.copyProperties(admin, adminVo);
-        return adminVo;
+        return queryAdminInfo(queryWrapper);
+    }
+
+    @Override
+    public AdminVo getByPhone(String phone) {
+        LambdaQueryWrapper<Admin> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Admin::getPhone, phone);
+        return queryAdminInfo(queryWrapper);
     }
 
     @Override
@@ -263,5 +289,19 @@ public class AdminServiceImpl implements AdminService {
         }
         Asserts.checkUpdate(adminRoleRelationMapper.insertBatchSomeColumn(adminRoleRelations),
                 "角色授权失败");
+    }
+
+    /**
+     * 根据QueryWrapper查询管理员信息
+     *
+     * @param queryWrapper 查询条件
+     * @return 管理员信息
+     */
+    private AdminVo queryAdminInfo(LambdaQueryWrapper<Admin> queryWrapper) {
+        Admin admin = adminMapper.selectOne(queryWrapper);
+        Asserts.checkNull(admin, "账号不存在");
+        AdminVo adminVo = new AdminVo();
+        BeanUtils.copyProperties(admin, adminVo);
+        return adminVo;
     }
 }

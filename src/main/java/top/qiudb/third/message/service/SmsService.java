@@ -1,4 +1,4 @@
-package top.qiudb.third.message;
+package top.qiudb.third.message.service;
 
 public interface SmsService {
     /**

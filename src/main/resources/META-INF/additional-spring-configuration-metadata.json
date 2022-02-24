@@ -54,5 +54,45 @@
       "name": "redis.key.prefix.authCode",
       "type": "java.lang.String",
       "description": "Description for redis.key.prefix.authCode."
+    },
+    {
+      "name": "spring.mail.nickname",
+      "type": "java.lang.String",
+      "description": "Description for spring.mail.nickname."
+    },
+    {
+      "name": "alipay.appid",
+      "type": "java.lang.String",
+      "description": "Description for alipay.appid."
+    },
+    {
+      "name": "alipay.privateKey",
+      "type": "java.lang.String",
+      "description": "Description for alipay.privateKey."
+    },
+    {
+      "name": "alipay.alipayPublicKey",
+      "type": "java.lang.String",
+      "description": "Description for alipay.alipayPublicKey."
+    },
+    {
+      "name": "alipay.gatewayUrl",
+      "type": "java.lang.String",
+      "description": "Description for alipay.gatewayUrl."
+    },
+    {
+      "name": "alipay.returnUrl",
+      "type": "java.lang.String",
+      "description": "Description for alipay.returnUrl."
+    },
+    {
+      "name": "alipay.notifyUrl",
+      "type": "java.lang.String",
+      "description": "Description for alipay.notifyUrl."
+    },
+    {
+      "name": "alipay.redirectUrl",
+      "type": "java.lang.String",
+      "description": "Description for alipay.redirectUrl."
     }
   ] }
