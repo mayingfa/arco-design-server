@@ -94,5 +94,20 @@
       "name": "alipay.redirectUrl",
       "type": "java.lang.String",
       "description": "Description for alipay.redirectUrl."
+    },
+    {
+      "name": "file.upload.path",
+      "type": "java.lang.String",
+      "description": "Description for file.upload.path."
+    },
+    {
+      "name": "file.upload.allowTypes",
+      "type": "java.lang.String",
+      "description": "Description for file.upload.allowTypes."
+    },
+    {
+      "name": "file.upload.restrictType",
+      "type": "java.lang.String",
+      "description": "Description for file.upload.restrictType."
     }
   ] }

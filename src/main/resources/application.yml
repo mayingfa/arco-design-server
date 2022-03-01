@@ -11,7 +11,8 @@ spring:
   servlet:
     multipart:
       enabled: true #开启文件上传
-      max-file-size: 512MB #限制文件上传大小为10M
+      max-file-size: 512MB #限制文件上传大小为512M
+      max-request-size: 512MB
   jpa:
     show-sql: true
     hibernate:
@@ -19,6 +20,7 @@ spring:
       naming:
         #表名及字段全小写下划线分隔命名策略(默认)
         physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+    open-in-view: false
   thymeleaf:
     cache: true
     check-template: true
@@ -26,7 +28,7 @@ spring:
     enabled: true
     encoding: UTF-8
     excluded-view-names: ''
-    mode: HTML5
+    mode: HTML
     prefix: classpath:/templates/
     suffix: .html
     servlet:
@@ -98,6 +100,18 @@ redis:
       # 验证码超期时间10分钟
       authCode: 600
 
+file:
+  upload:
+    # 文件存储路径
+    path: upload
+    # 是否限制文件类型
+    restrictType: false
+    # 文件上传允许的类型
+    allowTypes:
+        - image/jpeg
+        - image/png
+        - image/bmp
+
 swagger:
   enable: true
   name: ma_ying_fa
@@ -112,6 +126,8 @@ secure:
       - /admin/login/phone
       - /third/message/**
       - /third/pay/**
+      - /third/file-storage/**
+      - /upload/**
       - /static/**
       - /doc.html
       - /webjars/**

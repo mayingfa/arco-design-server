@@ -98,7 +98,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public AdminVo getById(Long adminId) {
-        Asserts.checkNull(adminId, "ID不允许为空");
+        Asserts.validatedNull(adminId, "ID不允许为空");
         Admin admin = adminMapper.selectById(adminId);
         Asserts.checkNull(admin, "账号不存在");
         AdminVo adminVo = new AdminVo();
@@ -131,7 +131,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public List<RoleVo> getRoleList(Long adminId) {
-        Asserts.checkNull(adminId, "ID不允许为空");
+        Asserts.validatedNull(adminId, "ID不允许为空");
         List<Role> roles = adminRoleRelationMapper.getRoleList(adminId, LockedEnum.NOT_LOCKED);
         Asserts.checkNull(roles, "获取角色信息失败");
         List<RoleVo> roleVos = new ArrayList<>();
@@ -145,7 +145,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public List<ResourceVo> getResourceList(Long adminId) {
-        Asserts.checkNull(adminId, "ID不允许为空");
+        Asserts.validatedNull(adminId, "ID不允许为空");
         List<Resource> resources = adminRoleRelationMapper.getResourceList(adminId);
         Asserts.checkNull(resources, "获取资源权限失败");
         List<ResourceVo> resourceVos = new ArrayList<>();
@@ -161,7 +161,7 @@ public class AdminServiceImpl implements AdminService {
     public void update(AdminParam adminParam) {
         Admin admin = new Admin();
         BeanUtils.copyProperties(adminParam, admin);
-        Asserts.checkNull(admin.getId(), "管理员ID不允许为空");
+        Asserts.validatedNull(admin.getId(), "管理员ID不允许为空");
         Admin originalAdmin = adminMapper.selectById(admin.getId());
         if (StringUtils.isNotBlank(admin.getPassword())) {
             String encodePassword = SaSecureUtil.md5BySalt(admin.getPassword(), admin.getUserName());
@@ -185,7 +185,8 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public void locked(Long adminId) {
-        Asserts.checkNull(adminId, "ID不允许为空");
+        Asserts.validatedNull(adminId, "ID不允许为空");
+        Asserts.checkTrue(exist(adminId), "账号不存在");
         StpUtil.kickout(adminId);
         StpUtil.disable(adminId, -1);
         if (!StpUtil.isDisable(adminId)) {
@@ -199,7 +200,8 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public void unlock(Long adminId) {
-        Asserts.checkNull(adminId, "ID不允许为空");
+        Asserts.validatedNull(adminId, "ID不允许为空");
+        Asserts.checkTrue(exist(adminId), "账号不存在");
         StpUtil.untieDisable(adminId);
         if (StpUtil.isDisable(adminId)) {
             Asserts.fail("账号解锁失败");
@@ -208,6 +210,22 @@ public class AdminServiceImpl implements AdminService {
         admin.setId(adminId);
         admin.setLocked(LockedEnum.NOT_LOCKED);
         Asserts.checkUpdate(adminMapper.updateById(admin), "账号解锁失败");
+    }
+
+    @Override
+    public boolean exist(Long adminId) {
+        Asserts.validatedNull(adminId, "ID不允许为空");
+        LambdaQueryWrapper<Admin> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Admin::getId, adminId);
+        return adminMapper.exists(queryWrapper);
+    }
+
+    @Override
+    public boolean exist(String userName) {
+        Asserts.validatedNull(userName, "用户名不允许为空");
+        LambdaQueryWrapper<Admin> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Admin::getUserName, userName);
+        return adminMapper.exists(queryWrapper);
     }
 
     @Override
@@ -260,7 +278,7 @@ public class AdminServiceImpl implements AdminService {
      * @param adminId 管理员唯一标识
      */
     private void deleteOriginalRole(Long adminId) {
-        Asserts.checkNull(adminId, "ID不允许为空");
+        Asserts.validatedNull(adminId, "ID不允许为空");
         LambdaQueryWrapper<AdminRoleRelation> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(AdminRoleRelation::getAdminId, adminId);
         Long count = adminRoleRelationMapper.selectCount(queryWrapper);

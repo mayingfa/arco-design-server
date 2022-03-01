@@ -55,4 +55,23 @@ public class CommonResult<T> {
     public static <T> CommonResult<T> success(String message, T data) {
         return new CommonResult<>(ResultCode.SUCCESS.getCode(), message, data);
     }
+
+    /**
+     * 失败返回结果
+     *
+     * @param data 获取的数据
+     */
+    public static <T> CommonResult<T> error(T data) {
+        return new CommonResult<>(ResultCode.ERROR.getCode(), ResultCode.ERROR.getMessage(), data);
+    }
+
+    /**
+     * 失败返回结果
+     *
+     * @param message 提示信息
+     * @param data    获取的数据
+     */
+    public static <T> CommonResult<T> error(String message, T data) {
+        return new CommonResult<>(ResultCode.ERROR.getCode(), message, data);
+    }
 }

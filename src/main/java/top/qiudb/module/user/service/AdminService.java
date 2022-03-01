@@ -114,6 +114,22 @@ public interface AdminService {
     void unlock(Long adminId);
 
     /**
+     * 检测账号是否存在
+     *
+     * @param adminId 管理员唯一标识
+     * @return 是否存在
+     */
+    boolean exist(Long adminId);
+
+    /**
+     * 根据用户名检测账号是否存在
+     *
+     * @param userName 用户名
+     * @return 是否存在
+     */
+    boolean exist(String userName);
+
+    /**
      * 修改密码
      * @param updatePasswordParam 修改密码参数
      */

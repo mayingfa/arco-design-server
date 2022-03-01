@@ -6,9 +6,11 @@ import cn.dev33.satoken.exception.NotPermissionException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import top.qiudb.common.constant.ResultCode;
 import top.qiudb.common.domain.CommonResult;
 import top.qiudb.common.exception.ApiException;
+import top.qiudb.common.exception.ValidatedException;
 
 
 /**
@@ -19,6 +21,11 @@ public class ExceptionControllerHandler {
     @ExceptionHandler(ApiException.class)
     public CommonResult<String> handlerApiException(ApiException e) {
         return new CommonResult<>(ResultCode.ERROR, e.getMessage());
+    }
+
+    @ExceptionHandler(ValidatedException.class)
+    public CommonResult<String> handlerValidatedException(ApiException e) {
+        return new CommonResult<>(ResultCode.VALIDATE_FAILED, e.getMessage());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -62,6 +69,11 @@ public class ExceptionControllerHandler {
     @ExceptionHandler(NotPermissionException.class)
     public CommonResult<String> handlerNotPermissionException() {
         return new CommonResult<>(ResultCode.NOT_PERMISSIONS, "无此权限");
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public CommonResult<String> handleMaxUploadSizeExceededException(MaxUploadSizeExceededException e){
+        return new CommonResult<>(ResultCode.ERROR, "上传文件太大");
     }
 
 }

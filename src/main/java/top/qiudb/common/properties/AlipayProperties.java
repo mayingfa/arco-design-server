@@ -1,17 +1,13 @@
 package top.qiudb.common.properties;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
+import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * 支付宝支付的参数配置
  */
-@Slf4j
-@Getter
-@Setter
+@Data
 @ConfigurationProperties(prefix = "alipay")
 public class AlipayProperties {
     /**

@@ -27,6 +27,24 @@ public class Asserts {
         throw new ApiException(message, cause);
     }
 
+    /**
+     * 校验参数是否为空，抛出校验异常
+     *
+     * @param data    被校验的数据
+     * @param message 错误信息
+     */
+    public static void validatedNull(Object data, String message) {
+        if (null == data) {
+            throw new ValidatedException(message);
+        }
+    }
+
+    /**
+     * 检查参数是否为空，抛出API异常
+     *
+     * @param data    被检查的数据
+     * @param message 错误信息
+     */
     public static void checkNull(Object data, String message) {
         if (null == data) {
             fail(message);
