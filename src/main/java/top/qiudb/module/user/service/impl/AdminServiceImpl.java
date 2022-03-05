@@ -12,6 +12,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import top.qiudb.common.constant.LockedEnum;
 import top.qiudb.common.exception.Asserts;
 import top.qiudb.module.user.domain.dto.AdminPageParam;
@@ -36,6 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Transactional
 public class AdminServiceImpl implements AdminService {
     @Autowired
     AdminMapper adminMapper;

@@ -109,5 +109,20 @@
       "name": "file.upload.restrictType",
       "type": "java.lang.String",
       "description": "Description for file.upload.restrictType."
+    },
+    {
+      "name": "admin.email",
+      "type": "java.lang.String",
+      "description": "Description for admin.email."
+    },
+    {
+      "name": "admin.password",
+      "type": "java.lang.String",
+      "description": "Description for admin.password."
+    },
+    {
+      "name": "admin.nickName",
+      "type": "java.lang.String",
+      "description": "Description for admin.nickName."
     }
   ] }
