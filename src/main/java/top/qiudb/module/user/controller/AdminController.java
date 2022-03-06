@@ -5,7 +5,6 @@ import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,28 +13,30 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import top.qiudb.common.domain.CommonResult;
 import top.qiudb.module.user.domain.dto.AdminPageParam;
 import top.qiudb.module.user.domain.dto.AdminParam;
 import top.qiudb.module.user.domain.dto.LoginParam;
 import top.qiudb.module.user.domain.dto.PhoneLoginParam;
 import top.qiudb.module.user.domain.dto.RegisterParam;
-import top.qiudb.module.user.domain.dto.UpdateAdminPasswordParam;
+import top.qiudb.module.user.domain.dto.ResetPasswordParam;
+import top.qiudb.module.user.domain.dto.UpdatePasswordParam;
 import top.qiudb.module.user.domain.vo.AdminVo;
 import top.qiudb.module.user.domain.vo.RoleVo;
 import top.qiudb.module.user.service.AdminService;
 
-import java.util.HashMap;
+import javax.annotation.Resource;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
 @Api(tags = "后台用户管理")
 @RequestMapping("/admin")
 public class AdminController {
-    @Autowired
+    @Resource
     private AdminService adminService;
 
     @ApiOperation(value = "用户注册")
@@ -66,17 +67,15 @@ public class AdminController {
 
     @ApiOperation(value = "获取当前登录用户信息")
     @GetMapping(value = "/info")
-    public CommonResult<Map<String, Object>> getAdminInfo() {
+    public CommonResult<AdminVo> getAdminInfo() {
         long adminId = StpUtil.getLoginIdAsLong();
         AdminVo admin = adminService.getById(adminId);
-        Map<String, Object> data = new HashMap<>(4);
-        data.put("userInfo", admin);
         List<RoleVo> roles = adminService.getRoleList(adminId);
         if (!CollectionUtils.isEmpty(roles)) {
             List<String> roleNames = roles.stream().map(RoleVo::getName).collect(Collectors.toList());
-            data.put("roleInfo", roleNames);
+            admin.setRole(roleNames);
         }
-        return CommonResult.success(data);
+        return CommonResult.success(admin);
     }
 
     @ApiOperation("分页获取用户列表")
@@ -99,9 +98,16 @@ public class AdminController {
     }
 
     @ApiOperation("修改密码")
-    @PostMapping(value = "/updatePassword")
-    public CommonResult<String> updatePassword(@Validated @RequestBody UpdateAdminPasswordParam passwordParam) {
+    @PostMapping(value = "/password/update")
+    public CommonResult<String> updatePassword(@Validated @RequestBody UpdatePasswordParam passwordParam) {
         adminService.updatePassword(passwordParam);
+        return CommonResult.success("密码修改成功");
+    }
+
+    @ApiOperation("重置密码")
+    @PostMapping(value = "/password/reset")
+    public CommonResult<String> resetPassword(@Validated @RequestBody ResetPasswordParam passwordParam) {
+        adminService.resetPassword(passwordParam);
         return CommonResult.success("密码修改成功");
     }
 
@@ -132,5 +138,12 @@ public class AdminController {
                                            @RequestParam("roleIds") List<Long> roleIds) {
         adminService.updateRole(adminId, roleIds);
         return CommonResult.success("角色授权成功");
+    }
+
+    @ApiOperation(value = "上传用户头像")
+    @PostMapping(value = "/upload/avatar")
+    public CommonResult<Object> uploadAvatar(@RequestPart @RequestParam("file") MultipartFile file) {
+        return CommonResult.success("头像上传成功",
+                adminService.uploadAvatar(StpUtil.getLoginIdAsLong(), file));
     }
 }

@@ -33,7 +33,7 @@ public class FileStorageServiceImpl implements FileStorageService {
     private List<String> allowTypes;
 
     @PostConstruct
-    public void init() {
+    private void init() {
         generateFolder(Paths.get(properties.getPath()));
         if (properties.getRestrictType()) {
             allowTypes = properties.getAllowTypes();
@@ -98,7 +98,7 @@ public class FileStorageServiceImpl implements FileStorageService {
         } catch (IOException e) {
             Asserts.fail("无法存储该文件", e);
         }
-        return new UploadFile(fileName, filePath.toString());
+        return new UploadFile(fileName, filePath.toString().replaceAll("\\\\", "/"));
     }
 
     /**

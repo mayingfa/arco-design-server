@@ -49,6 +49,5 @@ public class PublicConstant {
      */
     public static final String TIMESTAMP = "timestamp";
 
-
-    private PublicConstant() {}
+    private PublicConstant(){}
 }

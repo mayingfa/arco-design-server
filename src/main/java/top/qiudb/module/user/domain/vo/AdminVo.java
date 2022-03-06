@@ -12,6 +12,7 @@ import top.qiudb.common.constant.LockedEnum;
 import top.qiudb.common.domain.BaseVo;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 管理员信息
@@ -45,4 +46,6 @@ public class AdminVo extends BaseVo {
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime loginTime;
+
+    private List<String> role;
 }

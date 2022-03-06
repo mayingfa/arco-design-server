@@ -1,6 +1,8 @@
 package top.qiudb.common.constant;
 
+import com.baomidou.mybatisplus.annotation.EnumValue;
 import com.baomidou.mybatisplus.annotation.IEnum;
+import com.fasterxml.jackson.annotation.JsonValue;
 import top.qiudb.common.domain.BaseEnum;
 
 
@@ -15,8 +17,10 @@ public enum GenderEnum implements IEnum<Integer>, BaseEnum<Integer> {
      */
     MAN(1, "男");
 
+    @EnumValue
     private final Integer value;
 
+    @JsonValue
     private final String desc;
 
     GenderEnum(Integer value, String desc) {
@@ -31,14 +35,6 @@ public enum GenderEnum implements IEnum<Integer>, BaseEnum<Integer> {
 
     @Override
     public String getDesc() {
-        return this.desc;
-    }
-
-    /**
-     * 注意要重写此方法，不然会将值转换成 ‘MAN’，而不是 ‘男’
-     */
-    @Override
-    public String toString() {
         return this.desc;
     }
 }

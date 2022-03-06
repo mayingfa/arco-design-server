@@ -5,7 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
- * 支付宝支付的参数配置
+ * 支付宝沙箱参数配置
  */
 @Data
 @ConfigurationProperties(prefix = "alipay")

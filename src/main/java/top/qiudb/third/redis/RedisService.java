@@ -76,6 +76,14 @@ public interface RedisService {
     Boolean hasKey(String key);
 
     /**
+     * 检查验证码是否正确
+     * @param key      验证码键
+     * @param authCode 验证码
+     * @return 是否正确
+     */
+    Boolean checkAuthCode(String key,String authCode);
+
+    /**
      * 按delta递增
      *
      * @param key   键

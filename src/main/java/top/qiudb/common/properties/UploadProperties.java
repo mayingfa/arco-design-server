@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import java.util.List;
 
 /**
- * 上传文件的参数配置
+ * 上传文件参数配置
  */
 @Data
 @ConfigurationProperties(prefix = "file.upload")

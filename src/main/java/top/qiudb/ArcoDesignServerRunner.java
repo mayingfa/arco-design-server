@@ -8,6 +8,7 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Component;
 import top.qiudb.common.constant.LockedEnum;
+import top.qiudb.common.properties.HostAddressProperties;
 import top.qiudb.common.properties.SuperAdminProperties;
 import top.qiudb.module.user.domain.entity.Admin;
 import top.qiudb.module.user.mapper.AdminMapper;
@@ -29,6 +30,9 @@ public class ArcoDesignServerRunner implements ApplicationRunner {
 
     @Resource
     SuperAdminProperties superAdmin;
+
+    @Resource
+    HostAddressProperties hostAddressProperties;
 
     @Resource
     AdminService adminService;
@@ -60,5 +64,10 @@ public class ArcoDesignServerRunner implements ApplicationRunner {
             adminService.updateRole(admin.getId(), roleIds);
         }
         log.info("Project started successfully.");
+        printDocumentAddress();
+    }
+
+    void printDocumentAddress(){
+        log.info("项目接口文档地址: {}doc.html", hostAddressProperties.getHostAddress());
     }
 }

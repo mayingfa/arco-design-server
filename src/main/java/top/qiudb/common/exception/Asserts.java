@@ -18,10 +18,21 @@ public class Asserts {
     private Asserts() {
     }
 
+    /**
+     * 抛出自定义异常
+     *
+     * @param message 错误信息
+     */
     public static void fail(String message) {
         throw new ApiException(message);
     }
 
+    /**
+     * 抛出自定义异常
+     *
+     * @param message 错误信息
+     * @param cause   异常堆栈信息
+     */
     public static void fail(String message, Throwable cause) {
         log.error(message, cause);
         throw new ApiException(message, cause);
@@ -51,20 +62,32 @@ public class Asserts {
         }
     }
 
-    public static void checkTrue(Boolean data, String message) {
-        if (!data) {
-            fail(message);
-        }
-    }
-
-    public static void checkFalse(Boolean data, String message) {
-        if (data) {
+    /**
+     * 校验结果是否为真，若不是true则抛出自定义异常
+     *
+     * @param result  结果
+     * @param message 错误信息
+     */
+    public static void checkTrue(Boolean result, String message) {
+        if (!result) {
             fail(message);
         }
     }
 
     /**
-     * 检查Mybatis更新状态
+     * 校验结果是否为假，若不是false则抛出自定义异常
+     *
+     * @param result  结果
+     * @param message 错误信息
+     */
+    public static void checkFalse(Boolean result, String message) {
+        if (result) {
+            fail(message);
+        }
+    }
+
+    /**
+     * 检查Mybatis更新状态，若更新条数为0，则代表更新失败抛出异常
      *
      * @param updateNumber 更新标识
      * @param message      错误信息
@@ -76,7 +99,7 @@ public class Asserts {
     }
 
     /**
-     * 检查空集合
+     * 检查空集合，集合列表为null或空元素，则抛出自定义异常
      *
      * @param list    集合列表
      * @param message 错误信息

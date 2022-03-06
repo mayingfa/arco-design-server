@@ -3,12 +3,14 @@ package top.qiudb.module.user.service;
 import cn.dev33.satoken.stp.SaTokenInfo;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import top.qiudb.module.user.domain.dto.AdminPageParam;
 import top.qiudb.module.user.domain.dto.AdminParam;
 import top.qiudb.module.user.domain.dto.LoginParam;
 import top.qiudb.module.user.domain.dto.PhoneLoginParam;
 import top.qiudb.module.user.domain.dto.RegisterParam;
-import top.qiudb.module.user.domain.dto.UpdateAdminPasswordParam;
+import top.qiudb.module.user.domain.dto.ResetPasswordParam;
+import top.qiudb.module.user.domain.dto.UpdatePasswordParam;
 import top.qiudb.module.user.domain.vo.AdminVo;
 import top.qiudb.module.user.domain.vo.ResourceVo;
 import top.qiudb.module.user.domain.vo.RoleVo;
@@ -25,6 +27,7 @@ public interface AdminService {
 
     /**
      * 用户名登录
+     *
      * @param adminLoginParam 登录参数
      * @return 生成的token
      */
@@ -64,6 +67,7 @@ public interface AdminService {
 
     /**
      * 分页查询管理员信息
+     *
      * @param adminPageParam 分页查询参数
      * @return 分页信息
      */
@@ -131,15 +135,33 @@ public interface AdminService {
 
     /**
      * 修改密码
+     *
      * @param updatePasswordParam 修改密码参数
      */
-    void updatePassword(UpdateAdminPasswordParam updatePasswordParam);
+    void updatePassword(UpdatePasswordParam updatePasswordParam);
+
+    /**
+     * 重置密码
+     *
+     * @param resetPasswordParam 重置密码参数
+     */
+    void resetPassword(ResetPasswordParam resetPasswordParam);
 
     /**
      * 更新管理员角色关系
+     *
      * @param adminId 管理员唯一标识
      * @param roleIds 角色唯一标识列表
      */
     @Transactional(rollbackFor = Exception.class)
     void updateRole(Long adminId, List<Long> roleIds);
+
+    /**
+     * 上传头像
+     *
+     * @param adminId 管理员唯一标识
+     * @param file    头像
+     * @return 头像链接
+     */
+    String uploadAvatar(Long adminId, MultipartFile file);
 }

@@ -40,19 +40,19 @@ public class ExceptionControllerHandler {
         String message;
         switch (e.getType()) {
             case NotLoginException.NOT_TOKEN:
-                message = "未提供身份验证";
+                message = "此账号未提供身份验证";
                 break;
             case NotLoginException.INVALID_TOKEN:
-                message = "身份验证无效";
+                message = "此账号身份验证无效";
                 break;
             case NotLoginException.TOKEN_TIMEOUT:
-                message = "身份验证已过期";
+                message = "此账号身份验证已过期";
                 break;
             case NotLoginException.BE_REPLACED:
-                message = "账号已被顶下线";
+                message = "此账号已在别处登录";
                 break;
             case NotLoginException.KICK_OUT:
-                message = "账号已被踢下线";
+                message = "此账号已被踢下线";
                 break;
             default:
                 message = "当前会话未登录";

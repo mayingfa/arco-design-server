@@ -1,10 +1,11 @@
 package top.qiudb.third.redis.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import top.qiudb.third.redis.RedisService;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -15,7 +16,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Service
 public class RedisServiceImpl implements RedisService {
-    @Autowired
+    @Resource
     private RedisTemplate<String, Object> redisTemplate;
 
     @Override
@@ -56,6 +57,19 @@ public class RedisServiceImpl implements RedisService {
     @Override
     public Boolean hasKey(String key) {
         return redisTemplate.hasKey(key);
+    }
+
+    @Override
+    public Boolean checkAuthCode(String key, String authCode) {
+        String code = String.valueOf(get(key));
+        if(StringUtils.isBlank(code)){
+            return false;
+        }
+        boolean equals = authCode.equals(code);
+        if (equals) {
+            del(key);
+        }
+        return equals;
     }
 
     @Override

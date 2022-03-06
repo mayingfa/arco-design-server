@@ -13,14 +13,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+import top.qiudb.common.constant.FileStorageEnum;
 import top.qiudb.common.constant.LockedEnum;
 import top.qiudb.common.exception.Asserts;
+import top.qiudb.common.properties.HostAddressProperties;
 import top.qiudb.module.user.domain.dto.AdminPageParam;
 import top.qiudb.module.user.domain.dto.AdminParam;
 import top.qiudb.module.user.domain.dto.LoginParam;
 import top.qiudb.module.user.domain.dto.PhoneLoginParam;
 import top.qiudb.module.user.domain.dto.RegisterParam;
-import top.qiudb.module.user.domain.dto.UpdateAdminPasswordParam;
+import top.qiudb.module.user.domain.dto.ResetPasswordParam;
+import top.qiudb.module.user.domain.dto.UpdatePasswordParam;
 import top.qiudb.module.user.domain.entity.Admin;
 import top.qiudb.module.user.domain.entity.AdminRoleRelation;
 import top.qiudb.module.user.domain.entity.Resource;
@@ -31,13 +35,15 @@ import top.qiudb.module.user.domain.vo.RoleVo;
 import top.qiudb.module.user.mapper.AdminMapper;
 import top.qiudb.module.user.mapper.AdminRoleRelationMapper;
 import top.qiudb.module.user.service.AdminService;
+import top.qiudb.third.file.dto.UploadFile;
+import top.qiudb.third.file.service.FileStorageService;
 import top.qiudb.third.redis.RedisService;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class AdminServiceImpl implements AdminService {
     @Autowired
     AdminMapper adminMapper;
@@ -46,7 +52,13 @@ public class AdminServiceImpl implements AdminService {
     RedisService redisService;
 
     @Autowired
+    private FileStorageService fileStorageService;
+
+    @Autowired
     AdminRoleRelationMapper adminRoleRelationMapper;
+
+    @Autowired
+    HostAddressProperties hostAddress;
 
     @Value("${redis.key.prefix.authCode}")
     private String keyPrefix;
@@ -57,13 +69,13 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public void register(RegisterParam registerParam) {
-        String authCodeKey = keyPrefix + registerParam.getEmail();
-        Asserts.checkTrue(redisService.hasKey(authCodeKey), "验证码已过期，请重新获取");
-        String authCode = String.valueOf(redisService.get(authCodeKey));
-        Asserts.checkTrue(registerParam.getAuthCode().equals(authCode), "验证码错误");
-        if (getAdminCount(registerParam.getEmail()) > 0) {
+        if (exist(registerParam.getEmail())) {
             Asserts.fail("账号已被注册");
         }
+        String authCodeKey = keyPrefix + registerParam.getEmail();
+        Asserts.checkTrue(redisService.hasKey(authCodeKey), "验证码已过期，请重新获取");
+        Asserts.checkTrue(redisService.checkAuthCode(authCodeKey,
+                registerParam.getAuthCode()), "验证码错误");
         Admin admin = new Admin();
         admin.setNickName(registerParam.getNickName());
         admin.setUserName(registerParam.getEmail());
@@ -88,13 +100,15 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public SaTokenInfo phoneLogin(PhoneLoginParam phoneLoginParam) {
-        String phone = phoneLoginParam.getPhone();
+    public SaTokenInfo phoneLogin(PhoneLoginParam param) {
+        String phone = param.getPhone();
+        AdminVo adminVo = getByPhone(phone);
+        Asserts.checkNull(adminVo,"用户不存在");
         String authCodeKey = keyPrefix + phone;
         Asserts.checkTrue(redisService.hasKey(authCodeKey), "验证码已过期，请重新获取");
-        String authCode = String.valueOf(redisService.get(authCodeKey));
-        Asserts.checkTrue(phoneLoginParam.getAuthCode().equals(authCode), "验证码错误");
-        StpUtil.login(getByPhone(phone).getId());
+        Asserts.checkTrue(redisService.checkAuthCode(authCodeKey,
+                param.getAuthCode()), "验证码错误");
+        StpUtil.login(adminVo.getId());
         return StpUtil.getTokenInfo();
     }
 
@@ -105,6 +119,7 @@ public class AdminServiceImpl implements AdminService {
         Asserts.checkNull(admin, "账号不存在");
         AdminVo adminVo = new AdminVo();
         BeanUtils.copyProperties(admin, adminVo);
+        adminVo.setAvatar(hostAddress.getHostAddress()+adminVo.getAvatar());
         return adminVo;
     }
 
@@ -231,7 +246,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public void updatePassword(UpdateAdminPasswordParam param) {
+    public void updatePassword(UpdatePasswordParam param) {
         String userName = param.getUserName();
         AdminVo adminVo = getByUserName(userName);
         String encodePassword = SaSecureUtil.md5BySalt(param.getOldPassword(), param.getUserName());
@@ -245,9 +260,35 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
+    public void resetPassword(ResetPasswordParam param) {
+        String email = param.getEmail();
+        AdminVo adminVo = getByUserName(email);
+        Asserts.checkNull(adminVo,"用户不存在");
+        String authCodeKey = keyPrefix + email;
+        Asserts.checkTrue(redisService.hasKey(authCodeKey), "验证码已过期，请重新获取");
+        Asserts.checkTrue(redisService.checkAuthCode(authCodeKey,
+                param.getAuthCode()), "验证码错误");
+        redisService.del(authCodeKey);
+        String password = SaSecureUtil.md5BySalt(param.getNewPassword(), adminVo.getUserName());
+        Admin admin = Admin.builder().id(adminVo.getId()).password(password).build();
+        Asserts.checkUpdate(adminMapper.updateById(admin), "密码修改失败");
+    }
+
+    @Override
     public void updateRole(Long adminId, List<Long> roleIds) {
         deleteOriginalRole(adminId);
         createNewRole(adminId, roleIds);
+    }
+
+    @Override
+    public String uploadAvatar(Long adminId, MultipartFile file) {
+        UploadFile upload = fileStorageService.upload(FileStorageEnum.AVATAR, file);
+        Asserts.checkTrue(StringUtils.isNotBlank(upload.getUrl()),"头像上传失败");
+        AdminParam adminParam = new AdminParam();
+        adminParam.setId(adminId);
+        adminParam.setAvatar(upload.getUrl());
+        update(adminParam);
+        return upload.getUrl();
     }
 
     private IPage<AdminVo> getAdminVoPage(IPage<Admin> adminPage) {
@@ -255,23 +296,12 @@ public class AdminServiceImpl implements AdminService {
         for (Admin admin : adminPage.getRecords()) {
             AdminVo adminVo = new AdminVo();
             BeanUtils.copyProperties(admin, adminVo);
+            adminVo.setAvatar(hostAddress.getHostAddress()+adminVo.getAvatar());
             adminVos.add(adminVo);
         }
         return new Page<AdminVo>().setRecords(adminVos)
                 .setPages(adminPage.getPages())
                 .setTotal(adminPage.getTotal());
-    }
-
-    /**
-     * 获取管理员数量
-     *
-     * @param userName 管理员用户名
-     * @return 数量
-     */
-    private Long getAdminCount(String userName) {
-        LambdaQueryWrapper<Admin> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Admin::getUserName, userName);
-        return adminMapper.selectCount(queryWrapper);
     }
 
     /**
@@ -322,6 +352,7 @@ public class AdminServiceImpl implements AdminService {
         Asserts.checkNull(admin, "账号不存在");
         AdminVo adminVo = new AdminVo();
         BeanUtils.copyProperties(admin, adminVo);
+        adminVo.setAvatar(hostAddress.getHostAddress()+adminVo.getAvatar());
         return adminVo;
     }
 }

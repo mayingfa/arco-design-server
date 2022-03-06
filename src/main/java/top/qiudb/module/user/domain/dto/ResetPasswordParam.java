@@ -7,18 +7,18 @@ import lombok.Setter;
 import javax.validation.constraints.NotEmpty;
 
 /**
- * 修改密码参数
+ * 重置密码参数
  */
 @Getter
 @Setter
-public class UpdateAdminPasswordParam {
-    @NotEmpty(message = "用户名不能为空")
-    @ApiModelProperty(value = "用户名", required = true)
-    private String userName;
+public class ResetPasswordParam {
+    @NotEmpty(message = "邮箱地址不能为空")
+    @ApiModelProperty(value = "邮箱地址", required = true)
+    private String email;
 
-    @NotEmpty(message = "旧密码不能为空")
-    @ApiModelProperty(value = "旧密码", required = true)
-    private String oldPassword;
+    @NotEmpty(message = "验证码不能为空")
+    @ApiModelProperty(value = "验证码", required = true)
+    private String authCode;
 
     @NotEmpty(message = "新密码不能为空")
     @ApiModelProperty(value = "新密码", required = true)

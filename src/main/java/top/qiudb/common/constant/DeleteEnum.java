@@ -1,6 +1,8 @@
 package top.qiudb.common.constant;
 
+import com.baomidou.mybatisplus.annotation.EnumValue;
 import com.baomidou.mybatisplus.annotation.IEnum;
+import com.fasterxml.jackson.annotation.JsonValue;
 import top.qiudb.common.domain.BaseEnum;
 
 /**
@@ -17,8 +19,10 @@ public enum DeleteEnum implements IEnum<Integer>, BaseEnum<Integer> {
      */
     DELETE(1, "已删除");
 
+    @EnumValue
     private final Integer value;
 
+    @JsonValue
     private final String desc;
 
     DeleteEnum(Integer value, String desc) {
@@ -33,11 +37,6 @@ public enum DeleteEnum implements IEnum<Integer>, BaseEnum<Integer> {
 
     @Override
     public String getDesc() {
-        return this.desc;
-    }
-
-    @Override
-    public String toString() {
         return this.desc;
     }
 }

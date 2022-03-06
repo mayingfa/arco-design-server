@@ -48,6 +48,9 @@ mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    #log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
+    default-enum-type-handler: org.apache.ibatis.type.EnumOrdinalTypeHandler
+
   mapper-locations: classpath*:/mapper/**/*.xml
   type-aliases-package: top.qiudb.module.*.domain.entity
   type-enums-package: top.qiudb.common.constant
@@ -59,7 +62,7 @@ mybatis-plus:
     banner: false
 
 sa-token:
-  token-name: satoken
+  token-name: token
   # token有效期，单位s 默认30天, -1代表永不过期
   timeout: 2592000
   # token临时有效期 (指定时间内无操作就视为token过期) 单位: 秒
@@ -111,12 +114,13 @@ file:
         - image/jpeg
         - image/png
         - image/bmp
+        - image/gif
 
 swagger:
   enable: true
-  name: ma_ying_fa
-  url: https://gitee.com/ma_ying_fa
-  email: qiudb.top@aliyun.com
+  name: Captain
+  url: https://gitee.com/mayingfa/arco-design-server
+  email: 15233088662@163.com
 
 secure:
   ignored:
@@ -124,12 +128,20 @@ secure:
       - /admin/register
       - /admin/login/username
       - /admin/login/phone
+      - /admin/password/reset
       - /third/message/**
       - /third/pay/**
       - /third/file-storage/**
       - /upload/**
       - /static/**
       - /doc.html
+      - /favicon.ico
       - /webjars/**
       - /swagger-resources/**
       - /v3/api-docs
+
+# 超级管理员配置
+admin:
+  email: 1325554003@qq.com
+  nickName: 超级管理员
+  password: 123456
